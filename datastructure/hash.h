@@ -4,8 +4,8 @@
 #include <algorithm>
 using namespace std;
 
-class Hash{
-    private:
+class Hash{        
+    public: 
         struct Node{
             string username{};
             string pin{};
@@ -20,6 +20,7 @@ class Hash{
                 this->IdNasabah = IdNasabah;
             }   
         };
+
         static int const TABLE_SIZE = 10;
         Node* hashTable[TABLE_SIZE]{};
 
@@ -30,15 +31,13 @@ class Hash{
             }
             return usernameASCII % 10;
         }
-        
-    public: 
 
         int getTableSize() const {
-            return TABLE_SIZE;
-        }   
+        return TABLE_SIZE;
+        }
 
         Node** getTable() {
-            return hashTable;
+        return hashTable;
         }
         
         void insertHash(string username, string pin, string nik, string IdNasabah){

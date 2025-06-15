@@ -12,6 +12,8 @@
 
 using namespace std;
 
+using Node = Hash::Node;
+
 class MainController
 {
 private:
@@ -45,25 +47,8 @@ public:
                 regController.RegisterUser();
                 break;
             case '2':
-            {
-                string username;
-                bool loginSukses = loginController.loginUser(username);
-                if (loginSukses)
-                {
-                    if (username == "admin")
-                    {
-                        MenuAdminController adminMenu(&tree);
-                        adminMenu.run();
-                    }
-                    else
-                    {
-                        MenuNasabahController nasabahMenu(&tree, username);
-                        nasabahMenu.run();
-                    }
-                }
+                loginController.runLoginProcess();
                 break;
-            }
-
             case '3':
                 cout << "\n=== HashTable Akun ===" << endl;
                 hashTable.printHashTable();

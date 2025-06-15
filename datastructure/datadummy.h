@@ -14,7 +14,6 @@ void loadDummyData(Hash& hash, BinaryTreeNasabah& tree) {
     string id1 = generateIdNasabah();
     string rek1 = generateNoRekening();
     Akun akun1("admin", "234567", "1234567890", id1);
-    Nasabah nasabah1(id1, "1234567890", 500000, rek1);
 
     // Dummy 2
     string id2 = generateIdNasabah();
@@ -44,7 +43,6 @@ void loadDummyData(Hash& hash, BinaryTreeNasabah& tree) {
     hash.insertAkun(akun4);
     hash.insertAkun(akun5);
 
-    tree.insertTree(nasabah1);
     tree.insertTree(nasabah2);
     tree.insertTree(nasabah3);
     tree.insertTree(nasabah4);
