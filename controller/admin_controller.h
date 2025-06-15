@@ -116,7 +116,7 @@ public:
             string statusSelanjutnya = nasabah->aktif ? "Blokir" : "Aktif";
             cout << "Ubah status nasabah menjadi '" << statusSelanjutnya << "'? (y/n): ";
             cin >> konfirmasi;
-            cin.ignore(); // Membersihkan buffer
+            cin.ignore(); 
 
             if (konfirmasi == 'y' || konfirmasi == 'Y') {
                 // Ubah status (jika true jadi false, jika false jadi true)
@@ -137,14 +137,13 @@ public:
         cout << "Masukkan Nomor Rekening: ";
         getline(cin, noRekening);
 
-        // Langkah 1: Cari nasabah di dalam Tree berdasarkan nomor rekening
         Nasabah* nasabahData = tree->findByRekening(noRekening);
 
         // Jika nasabah ditemukan di Tree
         if (nasabahData != nullptr) {
             Node* akunData = nullptr;
 
-            // Langkah 2: Cari data Akun di Hash Table menggunakan IdNasabah sebagai kunci
+            // Cari data Akun di Hash Table menggunakan IdNasabah sebagai kunci
             Node** hashTable = hash->getTable();
             int tableSize = hash->getTableSize();
 
@@ -162,7 +161,6 @@ public:
                 }
             }
             
-            // Langkah 3: Tampilkan data gabungan
             cout << "\n--- Detail Nasabah Ditemukan ---" << endl;
             cout << "----------------------------------------" << endl;
             cout << "IdNasabah      : " << nasabahData->IdNasabah << endl;
