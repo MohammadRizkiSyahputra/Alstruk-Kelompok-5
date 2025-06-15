@@ -59,7 +59,16 @@ public:
             switch (pilihan)
             {
             case '1':
-                cout << "Fitur cek saldo belum diimplementasikan.\n";
+                {
+                    cout << "\n--- Informasi Saldo ---" << endl;
+                    if (nasabahAkun != nullptr) {
+                        cout << "Nomor Rekening: " << nasabahAkun->NoRekening << endl;
+                        cout << "Saldo Anda    : Rp" << fixed << setprecision(2) << nasabahAkun->saldo << endl;
+                    } else {
+                        cout << "Gagal memuat data akun." << endl;
+                    }
+                    cout << "-----------------------" << endl;
+                }
                 break;
             case '2':
                 lihatListTransaksi(nasabahAkun);
