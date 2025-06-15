@@ -12,12 +12,18 @@ private:
     int attempt{};
     Hash *hashTable;
     BinaryTreeNasabah *tree;
+    CSQueue *csTable1;
+    CSQueue *csTable2;
+    CSQueue *csTable3;
 
 public:
-    LoginController(Hash *hashTable, BinaryTreeNasabah *tree)
+    LoginController(Hash *hashTable, BinaryTreeNasabah *tree, CSQueue *cs1, CSQueue *cs2, CSQueue *cs3)
     {
         this->hashTable = hashTable;
         this->tree = tree;
+        this->csTable1 = cs1;
+        this->csTable2 = cs2;
+        this->csTable3 = cs3;
     }
 
     void runLoginProcess()
@@ -32,7 +38,7 @@ public:
         if (!hashTable->isUsernameExist(username))
         {
             cout << "Akun tidak ditemukan." << endl;
-            return; 
+            return;
         }
 
         cout << "Masukkan PIN      : ";
@@ -42,32 +48,33 @@ public:
         if (hashTable->isNodeFound(username, pin))
         {
             attempt = 0;
-            
-            // Check if the user is an admin or a regular customer
+
             if (username == "admin")
             {
                 cout << "\nLogin berhasil!" << endl;
                 cout << "Selamat datang, " << username << "!" << endl;
-                MenuAdminController adminMenu(tree, hashTable);
+                MenuAdminController adminMenu(tree, hashTable, csTable1, csTable2, csTable3);
                 adminMenu.run();
             }
             else
             {
-                // Before running the customer menu, check if the account is blocked
                 string idNasabah = hashTable->getIdNasabahByUsername(username);
-                if (!tree->getStatusAktifById(idNasabah)) {
+                if (!tree->getStatusAktifById(idNasabah))
+                {
                     cout << "\nAkun Anda saat ini dalam status terblokir." << endl;
                     cout << "Silakan hubungi admin untuk bantuan." << endl;
-                    return; 
-                } else {
+                    return;
+                }
+                else
+                {
                     cout << "\nLogin berhasil!" << endl;
                     cout << "Selamat datang, " << username << "!" << endl;
-                    MenuNasabahController nasabahMenu(tree, username);
-                nasabahMenu.run();
+                    MenuNasabahController nasabahMenu(tree, username, csTable1, csTable2, csTable3);
+                    nasabahMenu.run();
                 }
             }
         }
-        else 
+        else
         {
             cout << "\nLogin gagal! Username atau PIN salah." << endl;
             attempt++;
@@ -82,5 +89,5 @@ public:
                 attempt = 0; // Reset counter after blocking
             }
         }
-    }    
+    }
 };

@@ -8,6 +8,7 @@
 #include "../datastructure/hash.h"
 #include "../datastructure/tree.h"
 #include "../datastructure/datadummy.h"
+#include "../datastructure/cs_queue.h"
 #include "../view/MainView.h"
 
 using namespace std;
@@ -22,11 +23,12 @@ private:
     RegisterController regController;
     LoginController loginController;
     bool exitApp = false;
+    CSQueue csTable1, csTable2, csTable3; // For each meja
 
 public:
     MainController()
         : regController(&hashTable, &tree),
-          loginController(&hashTable, &tree)
+          loginController(&hashTable, &tree, &csTable1, &csTable2, &csTable3)
     {
     }
 

@@ -2,6 +2,7 @@
 #include "../datastructure/tree.h"
 #include "../datastructure/hash.h"
 #include "../view/MenuAdmin.h"
+#include "../datastructure/cs_queue.h"
 #include <limits>
 #include <iostream>
 #include <iomanip>
@@ -14,9 +15,13 @@ class MenuAdminController
 private:
     BinaryTreeNasabah *tree;
     Hash *hash;
+    CSQueue *csTable1;
+    CSQueue *csTable2;
+    CSQueue *csTable3;
 
 public:
-    MenuAdminController(BinaryTreeNasabah *tree, Hash *hash) : tree(tree), hash(hash) {}
+    MenuAdminController(BinaryTreeNasabah *tree, Hash *hash, CSQueue *cs1, CSQueue *cs2, CSQueue *cs3)
+        : tree(tree), hash(hash), csTable1(cs1), csTable2(cs2), csTable3(cs3) {}
 
     void run()
     {
@@ -39,8 +44,7 @@ public:
                 cariNasabah();
                 break;
             case '4':
-                // Implementasi manage antrian nasabah
-                cout << "Fitur manage antrian nasabah belum diimplementasikan.\n";
+                manageAntrianCS();
                 break;
             case '0':
                 logout = true;
@@ -51,60 +55,70 @@ public:
         }
     }
 
-    void lihatSemuaDataNasabah() {
+    void lihatSemuaDataNasabah()
+    {
         cout << "\n===== DATA SEMUA NASABAH =====" << endl;
-        Node** hashTable = hash->getTable();
+        Node **hashTable = hash->getTable();
         int tableSize = hash->getTableSize();
         bool dataDitemukan = false;
-        for (int i = 0; i < tableSize; ++i) {
-            Node* travel = hashTable[i];
-            while (travel != nullptr) {
-                
-                if (travel->username == "admin") {
+        for (int i = 0; i < tableSize; ++i)
+        {
+            Node *travel = hashTable[i];
+            while (travel != nullptr)
+            {
+
+                if (travel->username == "admin")
+                {
                     travel = travel->next;
                     continue;
                 }
 
-        dataDitemukan = true;
-        // Cari data nasabah di tree menggunakan IdNasabah dari hash
-        Nasabah* nasabahData = tree->searchNasabah(travel->IdNasabah);
+                dataDitemukan = true;
+                // Cari data nasabah di tree menggunakan IdNasabah dari hash
+                Nasabah *nasabahData = tree->searchNasabah(travel->IdNasabah);
 
-        cout << "----------------------------------------" << endl;
+                cout << "----------------------------------------" << endl;
                 // Data dari Hash Table
                 cout << "IdNasabah      : " << travel->IdNasabah << endl;
                 cout << "Username       : " << travel->username << endl;
                 cout << "NIK            : " << travel->nik << endl;
                 cout << "Pin            : " << string(travel->pin.length(), '*') << endl;
-                
+
                 // Data dari Tree
-                if (nasabahData != nullptr) {
+                if (nasabahData != nullptr)
+                {
                     cout << "Nomor Rekening : " << nasabahData->NoRekening << endl;
                     cout << "Saldo          : Rp" << fixed << setprecision(2) << nasabahData->saldo << endl;
                     cout << "Status         : " << (nasabahData->aktif ? "Aktif" : "Blokir") << endl;
-                } else {
+                }
+                else
+                {
                     cout << "Detail rekening (saldo, status) tidak ditemukan." << endl;
                 }
                 travel = travel->next;
             }
         }
 
-        if (!dataDitemukan) {
+        if (!dataDitemukan)
+        {
             cout << "Belum ada data nasabah yang terdaftar.\n";
         }
         cout << "==========================================" << endl;
     }
 
-    void ubahStatusNasabah() {
+    void ubahStatusNasabah()
+    {
         string noRekening;
         cout << "\n--- Ubah Status Aktivasi Nasabah ---" << endl;
         cout << "Masukkan Nomor Rekening: ";
         getline(cin, noRekening);
 
         // Cari nasabah di tree berdasarkan nomor rekening
-        Nasabah* nasabah = tree->findByRekening(noRekening);
+        Nasabah *nasabah = tree->findByRekening(noRekening);
 
         // Jika nasabah ditemukan
-        if (nasabah != nullptr) {
+        if (nasabah != nullptr)
+        {
             cout << "--- Detail Nasabah ---" << endl;
             cout << "ID Nasabah     : " << nasabah->IdNasabah << endl;
             cout << "Nomor Rekening : " << nasabah->NoRekening << endl;
@@ -116,61 +130,75 @@ public:
             string statusSelanjutnya = nasabah->aktif ? "Blokir" : "Aktif";
             cout << "Ubah status nasabah menjadi '" << statusSelanjutnya << "'? (y/n): ";
             cin >> konfirmasi;
-            cin.ignore(); 
+            cin.ignore();
 
-            if (konfirmasi == 'y' || konfirmasi == 'Y') {
+            if (konfirmasi == 'y' || konfirmasi == 'Y')
+            {
                 // Ubah status (jika true jadi false, jika false jadi true)
                 nasabah->aktif = !nasabah->aktif;
                 cout << "\nBerhasil! Status nasabah telah diubah menjadi '" << statusSelanjutnya << "'." << endl;
-            } else {
+            }
+            else
+            {
                 cout << "\nPerubahan status dibatalkan." << endl;
             }
-        } else {
+        }
+        else
+        {
             // Jika nasabah tidak ditemukan
             cout << "\nError: Nasabah dengan nomor rekening '" << noRekening << "' tidak ditemukan." << endl;
         }
     }
 
-    void cariNasabah() {
+    void cariNasabah()
+    {
         string noRekening;
         cout << "\n--- Cari Detail Nasabah ---" << endl;
         cout << "Masukkan Nomor Rekening: ";
         getline(cin, noRekening);
 
-        Nasabah* nasabahData = tree->findByRekening(noRekening);
+        Nasabah *nasabahData = tree->findByRekening(noRekening);
 
         // Jika nasabah ditemukan di Tree
-        if (nasabahData != nullptr) {
-            Node* akunData = nullptr;
+        if (nasabahData != nullptr)
+        {
+            Node *akunData = nullptr;
 
             // Cari data Akun di Hash Table menggunakan IdNasabah sebagai kunci
-            Node** hashTable = hash->getTable();
+            Node **hashTable = hash->getTable();
             int tableSize = hash->getTableSize();
 
-            for (int i = 0; i < tableSize; ++i) {
-                Node* travel = hashTable[i];
-                while (travel != nullptr) {
-                    if (travel->IdNasabah == nasabahData->IdNasabah) {
+            for (int i = 0; i < tableSize; ++i)
+            {
+                Node *travel = hashTable[i];
+                while (travel != nullptr)
+                {
+                    if (travel->IdNasabah == nasabahData->IdNasabah)
+                    {
                         akunData = travel;
                         break; // Keluar dari while loop jika sudah ketemu
                     }
                     travel = travel->next;
                 }
-                if (akunData != nullptr) {
+                if (akunData != nullptr)
+                {
                     break; // Keluar dari for loop jika sudah ketemu
                 }
             }
-            
+
             cout << "\n--- Detail Nasabah Ditemukan ---" << endl;
             cout << "----------------------------------------" << endl;
             cout << "IdNasabah      : " << nasabahData->IdNasabah << endl;
-            
+
             // Tampilkan data dari Akun jika ditemukan
-            if (akunData != nullptr) {
+            if (akunData != nullptr)
+            {
                 cout << "Username       : " << akunData->username << endl;
                 cout << "NIK            : " << akunData->nik << endl;
                 cout << "Pin (masked)   : " << string(akunData->pin.length(), '*') << endl;
-            } else {
+            }
+            else
+            {
                 cout << "Data Akun (username, NIK) tidak ditemukan di Hash Table." << endl;
             }
 
@@ -179,10 +207,42 @@ public:
             cout << "Saldo          : Rp" << fixed << setprecision(2) << nasabahData->saldo << endl;
             cout << "Status         : " << (nasabahData->aktif ? "Aktif" : "Blokir") << endl;
             cout << "----------------------------------------" << endl;
-
-        } else {
+        }
+        else
+        {
             // Jika nasabah tidak ditemukan di Tree
             cout << "\nError: Nasabah dengan nomor rekening '" << noRekening << "' tidak ditemukan." << endl;
+        }
+    }
+
+    void manageAntrianCS()
+    {
+        while (true)
+        {
+            cout << "\n=== Manage Antrian Layanan CS ===\n";
+            cout << "1. Antrian CS Meja 1\n";
+            cout << "2. Antrian CS Meja 2\n";
+            cout << "3. Antrian CS Meja 3\n";
+            cout << "4. Kembali\n";
+            cout << "Pilih: ";
+            int meja;
+            cin >> meja;
+            cin.ignore();
+            if (meja == 4)
+                break;
+            CSQueue *queue = (meja == 1) ? csTable1 : (meja == 2) ? csTable2
+                                                                  : csTable3;
+            cout << "\nDaftar Antrian:\n";
+            queue->tampil();
+            cout << "Tekan 1 untuk panggil berikutnya, 2 untuk kembali: ";
+            int aksi;
+            cin >> aksi;
+            cin.ignore();
+            if (aksi == 1)
+            {
+                queue->dequeue();
+                cout << "Antrian berikutnya dipanggil!\n";
+            }
         }
     }
 };
