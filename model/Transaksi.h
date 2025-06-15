@@ -1,5 +1,7 @@
+#pragma once
+
 #include "../datastructure/linkedList.h"
-#include "Nasabah.h"
+#include "./Nasabah.h"
 
 struct DataTransaksi {
     string label;

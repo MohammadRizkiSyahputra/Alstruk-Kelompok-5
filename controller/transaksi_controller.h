@@ -5,18 +5,12 @@
 #include <iostream>
 #include <string>
 
-void tambahTransaksi(Nasabah nasabahAkun, Nasabah nasabahTujuan, string label, int num, string tanggal) {
-    DataTransaksi transaksiAkun = DataTransaksi(label, -1*num, nasabahTujuan.IdNasabah, false, tanggal);
-    DataTransaksi transaksiTujuan = DataTransaksi(label, num, nasabahAkun.IdNasabah, true, tanggal);
-    nasabahAkun.listTransaksi.append(transaksiAkun);
-    nasabahTujuan.listTransaksi.append(transaksiTujuan);
-}
-
-void lihatListTransaksi(Nasabah nasabahAkun) {
-    LinkedList<DataTransaksi>::Node* current = nasabahAkun.listTransaksi.getHead();
-    while (current) {
-        lihatTransaksi(current);
-    }
+void tambahTransaksi(Nasabah* nasabahAkun, Nasabah* nasabahTujuan, string label, int num, string tanggal) {
+    DataTransaksi transaksiAkun = DataTransaksi(label, num, nasabahTujuan->IdNasabah, false, tanggal);
+    DataTransaksi transaksiTujuan = DataTransaksi(label, num, nasabahAkun->IdNasabah, true, tanggal);
+    nasabahAkun->listTransaksi.append(transaksiAkun);
+    nasabahTujuan->listTransaksi.append(transaksiTujuan);
+    
 }
 
 void lihatTransaksi(LinkedList<DataTransaksi>::Node* node) {
@@ -27,19 +21,6 @@ void lihatTransaksi(LinkedList<DataTransaksi>::Node* node) {
         "Nasabah Tujuan: " << node->data.idNasabah << '\n' <<
         "Nominal Transfer: " << node->data.jumlahNominal << '\n' <<
         "Arah Transfer: " << outArah << '\n' <<
-        "Tanggal Transfer: " << node->data.tanggal << '\n';
+        "Tanggal Transfer: " << node->data.tanggal << '\n' <<
         "=============================================================\n";
-}
-
-void cariTransaksi(Nasabah nasabahAkun, string label) {
-    LinkedList<DataTransaksi>::Node* current = nasabahAkun.listTransaksi.getHead();
-    while (current) {
-        string currentLabel = current->data.label;
-        std::transform(currentLabel.begin(), currentLabel.end(), currentLabel.begin(), ::tolower);
-        std::transform(label.begin(), label.end(), label.begin(), ::tolower);
-
-        if (currentLabel.find(label) != string::npos) {
-            lihatTransaksi(current);
-        }
-    }
 }

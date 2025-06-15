@@ -15,6 +15,7 @@ private:
     CSQueue *csTable1;
     CSQueue *csTable2;
     CSQueue *csTable3;
+    Nasabah *nasabahAkun;
 
 public:
     LoginController(Hash *hashTable, BinaryTreeNasabah *tree, CSQueue *cs1, CSQueue *cs2, CSQueue *cs3)
@@ -67,10 +68,11 @@ public:
                 }
                 else
                 {
+                    nasabahAkun = tree->findNasabahById(idNasabah);
                     cout << "\nLogin berhasil!" << endl;
                     cout << "Selamat datang, " << username << "!" << endl;
                     MenuNasabahController nasabahMenu(tree, username, csTable1, csTable2, csTable3);
-                    nasabahMenu.run();
+                    nasabahMenu.run(nasabahAkun, tree);
                 }
             }
         }

@@ -2,7 +2,10 @@
 #include "../datastructure/tree.h"
 #include "../view/MenuNasabah.h"
 #include "../datastructure/cs_queue.h"
+#include "../view/TransaksiView.h"
 #include <iostream>
+
+
 using namespace std;
 
 class MenuNasabahController
@@ -18,7 +21,7 @@ public:
     MenuNasabahController(BinaryTreeNasabah *tree, const string &username, CSQueue *cs1, CSQueue *cs2, CSQueue *cs3)
         : tree(tree), username(username), csTable1(cs1), csTable2(cs2), csTable3(cs3) {}
 
-    void run()
+    void run(Nasabah* nasabahAkun, BinaryTreeNasabah* tree)
     {
         char pilihan;
         bool logout = false;
@@ -29,10 +32,10 @@ public:
             switch (pilihan)
             {
             case '1':
-                menuInformasi();
+                menuInformasi(nasabahAkun);
                 break;
             case '2':
-                menuTransaksi();
+                menuTransaksi(nasabahAkun, tree);
                 break;
             case '3':
                 menuLayananCS();
@@ -46,7 +49,7 @@ public:
         }
     }
 
-    void menuInformasi()
+    void menuInformasi(Nasabah* nasabahAkun)
     {
         char pilihan;
         do
@@ -59,7 +62,7 @@ public:
                 cout << "Fitur cek saldo belum diimplementasikan.\n";
                 break;
             case '2':
-                cout << "Fitur rekap transaksi belum diimplementasikan.\n";
+                lihatListTransaksi(nasabahAkun);
                 break;
             case '0':
                 break;
@@ -69,7 +72,7 @@ public:
         } while (pilihan != '0');
     }
 
-    void menuTransaksi()
+    void menuTransaksi(Nasabah* nasabahAkun, BinaryTreeNasabah* tree)
     {
         char pilihan;
         do
@@ -79,7 +82,7 @@ public:
             switch (pilihan)
             {
             case '1':
-                cout << "Fitur transfer uang belum diimplementasikan.\n";
+                transfer(nasabahAkun, tree);
                 break;
             case '0':
                 break;
