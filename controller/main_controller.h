@@ -1,8 +1,8 @@
 #pragma once
 
 #include <iostream>
-// #include "../controller/menu_admin_controller.h"
-// #include "../controller/menu_nasabah_controller.h"
+#include "../controller/admin_controller.h"
+#include "../controller/nasabah_controller.h"
 #include "../controller/login_controller.h"
 #include "../controller/register_controller.h"
 #include "../datastructure/hash.h"
@@ -12,7 +12,8 @@
 
 using namespace std;
 
-class MainController {
+class MainController
+{
 private:
     Hash hashTable;
     BinaryTreeNasabah tree;
@@ -21,41 +22,48 @@ private:
     bool exitApp = false;
 
 public:
-    MainController() 
+    MainController()
         : regController(&hashTable, &tree),
-        loginController(&hashTable, &tree) {
+          loginController(&hashTable, &tree)
+    {
     }
 
-    void run() {
-    char pilihan;
-    MainView::clearScreen();
-    loadDummyData(hashTable, tree);
+    void run()
+    {
+        char pilihan;
+        MainView::clearScreen();
+        loadDummyData(hashTable, tree);
 
-    while (!exitApp) {
-        MainView::tampilkanMenuUtama();
-        cin >> pilihan;
+        while (!exitApp)
+        {
+            MainView::tampilkanMenuUtama();
+            cin >> pilihan;
 
-        switch (pilihan) {
+            switch (pilihan)
+            {
             case '1':
                 regController.RegisterUser();
                 break;
             case '2':
-                loginController.loginUser();
+            {
+                string username;
+                bool loginSukses = loginController.loginUser(username);
+                if (loginSukses)
                 {
-                    string username;
-                    bool loginSukses = loginController.loginUser();
-                    if (loginSukses) {
-                        if (username == "admin") {
-                            // MenuAdminController adminMenu;
-                            // adminMenu.run();
-                        } else {
-                            // MenuNasabahController nasabahMenu;
-                            // nasabahMenu.run(username);
-                        }
+                    if (username == "admin")
+                    {
+                        MenuAdminController adminMenu(&tree);
+                        adminMenu.run();
                     }
-                    break;
+                    else
+                    {
+                        MenuNasabahController nasabahMenu(&tree, username);
+                        nasabahMenu.run();
+                    }
                 }
-                
+                break;
+            }
+
             case '3':
                 cout << "\n=== HashTable Akun ===" << endl;
                 hashTable.printHashTable();
@@ -68,7 +76,7 @@ public:
                 break;
             default:
                 MainView::tampilkanPesanTidakValid();
+            }
         }
     }
-}
 };
