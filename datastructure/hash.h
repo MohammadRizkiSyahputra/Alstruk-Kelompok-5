@@ -32,7 +32,7 @@ class Hash{
             return usernameASCII % 10;
         }
 
-        int getTableSize() const {
+        int getTableSize() {
         return TABLE_SIZE;
         }
 

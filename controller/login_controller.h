@@ -73,6 +73,7 @@ public:
                     cout << "Selamat datang, " << username << "!" << endl;
                     MenuNasabahController nasabahMenu(tree, username, csTable1, csTable2, csTable3);
                     nasabahMenu.run(nasabahAkun, tree);
+                    attempt = 0;
                 }
             }
         }
